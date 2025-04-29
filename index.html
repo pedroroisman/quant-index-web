@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Índice Quant</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #indice {
+      font-size: 5em;
+      margin: 20px 0;
+      transition: color 0.5s ease;
+    }
+
+    #label {
+      font-size: 2em;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div id="label">Índice Quant</div>
+  <div id="indice">Cargando...</div>
+
+  <script>
+    async function fetchIndice() {
+      try {
+        const response = await fetch("http://127.0.0.1:8001/indice", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            precio_actual: 14.8,
+            ordenes: [
+              { tipo: "compra", precio_objetivo: 15 },
+              { tipo: "venta", precio_objetivo: 16.5 },
+              { tipo: "compra", precio_objetivo: 14 }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const indice = data.indice;
+        const el = document.getElementById("indice");
+
+        el.textContent = indice;
+
+        // Cambiar color según valor
+        if (indice <= -0.5) {
+          el.style.color = "#00ff00"; // Verde
+        } else if (indice >= 0.5) {
+          el.style.color = "#ff3333"; // Rojo
+        } else {
+          el.style.color = "#ffff33"; // Amarillo
+        }
+      } catch (error) {
+        console.error("Error al obtener el índice:", error);
+        document.getElementById("indice").textContent = "Error";
+        document.getElementById("indice").style.color = "#888";
+      }
+    }
+
+    fetchIndice();
+    setInterval(fetchIndice, 5000); // actualizar cada 5 segundos
+  </script>
+</body>
+</html>
+
