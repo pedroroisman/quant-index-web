@@ -242,6 +242,7 @@
       container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
     }
 
+    container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
     for (const key in endpoints) {
       fetch(endpoints[key])
         .then(function(response) {
@@ -360,11 +361,11 @@
         card.style.fontFamily = "monospace";
         card.style.fontSize = "1.2rem";
 
-        card.innerHTML =
-          "<strong>[" + label + "]</strong><br>" +
-          "<span style='font-size: 2rem;'>" + data.indice + "</span><br>" +
-          "<small>" + (data.note || "") + "</small>";
-
+        card.innerHTML = \`
+          <strong>[\${label}]</strong><br>
+          <span style="font-size: 2rem; color: \${color};">\${data.indice}</span><br>
+          <small style="color: #ccc;">\${data.note || ""}</small>
+        \`;
 
         container.appendChild(card);
       } catch (err) {
