@@ -25,7 +25,18 @@
       font-size: 1.25rem;
       font-weight: 400;
       color: #aaaaaa;
+      margin-bottom: 1rem;
+    }
+
+    .legend {
+      font-size: 0.95rem;
+      color: #cccccc;
       margin-bottom: 2rem;
+    }
+
+    .legend span {
+      display: inline-block;
+      margin: 0 10px;
     }
 
     select {
@@ -81,6 +92,16 @@
 <body>
   <h1>QUANT INDEX</h1>
   <h2>You can now see what they see.</h2>
+
+  <div class="legend">
+    <span>-1 = 📉 strong buy</span>
+    <span>0 = ⚖️ neutral</span>
+    <span>+1 = 📈 strong sell</span>
+    <br>
+    <span>Intraday = same-day movement</span>
+    <span>Swing = 2–10 days</span>
+    <span>Medium-Term = 1–3 months</span>
+  </div>
 
   <div>
     <label for="tickerSelect">Ticker:</label>
