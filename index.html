@@ -213,5 +213,54 @@
     cargarIndices();
     setInterval(cargarIndices, 15000);
   </script>
+<script>
+  async function fetchLiveSignals() {
+    const endpoints = {
+      "Swing": "https://quant-index-api.onrender.com/indice_swing",
+      "Medium-Term": "https://quant-index-api.onrender.com/indice_medium"
+    };
+
+    const container = document.createElement("div");
+    container.innerHTML = "<h2 style='margin-bottom: 0.5rem;'>LIVE SIGNALS</h2>";
+    container.style.padding = "20px";
+    container.style.maxWidth = "500px";
+    container.style.margin = "0 auto";
+
+    for (const [label, url] of Object.entries(endpoints)) {
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const bg = data.indice < 0 ? "#004d40" : data.indice > 0 ? "#600000" : "#333";
+        const color = data.indice < 0 ? "#00ff88" : data.indice > 0 ? "#ff7777" : "#ffaa00";
+
+        const card = document.createElement("div");
+        card.style.background = bg;
+        card.style.padding = "12px";
+        card.style.marginBottom = "10px";
+        card.style.borderRadius = "12px";
+        card.style.color = "#fff";
+        card.style.fontFamily = "monospace";
+        card.style.fontSize = "1.2rem";
+
+        card.innerHTML = `
+          <strong>${label}</strong><br>
+          <span style="font-size: 2rem; color: ${color};">${data.indice}</span><br>
+          <small style="color: #ccc;">${data.note || ""}</small>
+        `;
+
+        container.appendChild(card);
+      } catch (err) {
+        console.error("Error fetching", label, err);
+      }
+    }
+
+    document.body.insertBefore(container, document.getElementById("grilla"));
+  }
+
+  fetchLiveSignals();
+  setInterval(fetchLiveSignals, 15000); // actualizar cada 15s
+</script>
+
 </body>
 </html>
