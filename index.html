@@ -164,12 +164,74 @@
   let allData = [];
 
   async function cargarIndices() {
+  try {
     const res = await fetch("https://quant-index-api.onrender.com/indices");
     const data = await res.json();
-    allData = data.acciones;
-    populateFilters(allData);
-    renderIndices();
+
+    if (!data.acciones || data.acciones.length === 0) {
+      allData = [
+        {
+          ticker: "META",
+          estrategias: [
+            { horizonte: "Intraday", indice: -0.8 },
+            { horizonte: "Swing", indice: 0.3 },
+            { horizonte: "Medium-Term", indice: 0.7 }
+          ]
+        },
+        {
+          ticker: "GOOGL",
+          estrategias: [
+            { horizonte: "Intraday", indice: -0.6 },
+            { horizonte: "Swing", indice: 0.1 },
+            { horizonte: "Medium-Term", indice: 0.5 }
+          ]
+        },
+        {
+          ticker: "NFLX",
+          estrategias: [
+            { horizonte: "Intraday", indice: 0.2 },
+            { horizonte: "Swing", indice: -0.3 },
+            { horizonte: "Medium-Term", indice: -0.7 }
+          ]
+        }
+      ];
+    } else {
+      allData = data.acciones;
+    }
+  } catch (e) {
+    console.error("Error al cargar datos simulados:", e);
+    allData = [
+      {
+        ticker: "META",
+        estrategias: [
+          { horizonte: "Intraday", indice: -0.8 },
+          { horizonte: "Swing", indice: 0.3 },
+          { horizonte: "Medium-Term", indice: 0.7 }
+        ]
+      },
+      {
+        ticker: "GOOGL",
+        estrategias: [
+          { horizonte: "Intraday", indice: -0.6 },
+          { horizonte: "Swing", indice: 0.1 },
+          { horizonte: "Medium-Term", indice: 0.5 }
+        ]
+      },
+      {
+        ticker: "NFLX",
+        estrategias: [
+          { horizonte: "Intraday", indice: 0.2 },
+          { horizonte: "Swing", indice: -0.3 },
+          { horizonte: "Medium-Term", indice: -0.7 }
+        ]
+      }
+    ];
   }
+
+  populateFilters(allData);
+  renderIndices();
+}
+
 
   function populateFilters(data) {
     const tickers = [...new Set(data.map(a => a.ticker))];
