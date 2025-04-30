@@ -199,6 +199,11 @@
 
           fila.appendChild(info);
           fila.appendChild(valor);
+          const fuente = document.createElement("small");
+          fuente.style.color = "#777";
+          fuente.textContent = "Source: simulated";
+          fuente.style.marginLeft = "8px";
+          bloque.appendChild(fuente);
           bloque.appendChild(fila);
         });
 
@@ -279,7 +284,7 @@
       document.body.insertBefore(container, document.getElementById("grilla"));
     }
 
-    container.innerHTML = "<h2 style='margin-bottom: 0.5rem;'>📈 AAPL</h2>";
+    container.innerHTML = `<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>`;
 
     for (const [label, url] of Object.entries(endpoints)) {
       try {
