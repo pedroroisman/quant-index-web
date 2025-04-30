@@ -182,46 +182,6 @@
 }
 
 
-    let container = document.getElementById("live-signals");
-    if (!container) {
-      container = document.createElement("div");
-      container.id = "live-signals";
-      document.body.insertBefore(container, document.getElementById("grilla"));
-    }
-
-    container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
-
-    for (const key in endpoints) {
-      try {
-        const res = await fetch(endpoints[key]);
-        const data = await res.json();
-
-        const card = document.createElement("div");
-        card.style.background = "#222";
-        card.style.padding = "12px";
-        card.style.marginBottom = "10px";
-        card.style.borderRadius = "12px";
-        card.style.color = "#fff";
-        card.style.fontFamily = "monospace";
-        card.style.fontSize = "1.2rem";
-
-        const x = parseFloat(data.indice);
-        let color = "#ffaa00";
-        if (x < -0.1) color = "#00ff88";
-        else if (x > 0.1) color = "#ff7777";
-
-        card.innerHTML =
-          "<strong>[" + key + "]</strong><br>" +
-          "<span style='font-size: 2rem; color:" + color + ";'>" + data.indice + "</span><br>" +
-          "<small style='color: #ccc;'>" + (data.note || "") + "</small>";
-
-        container.appendChild(card);
-      } catch (e) {
-        console.error("Error fetching " + key, e);
-      }
-    }
-  }
-
   let allData = [];
 
   async function cargarIndices() {
