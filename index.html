@@ -28,6 +28,15 @@
       margin-bottom: 2rem;
     }
 
+    select {
+      margin: 0 8px 20px 8px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      border: 1px solid #444;
+    }
+
     .accion {
       margin-top: 2rem;
       text-align: left;
@@ -71,20 +80,76 @@
 </head>
 <body>
   <h1>QUANT INDEX</h1>
-  <h2>You can now see see what they see.</h2>
+  <h2>You can now see what they see.</h2>
+
+  <div>
+    <label for="tickerSelect">Ticker:</label>
+    <select id="tickerSelect">
+      <option value="All">All</option>
+    </select>
+
+    <label for="horizonSelect">Horizon:</label>
+    <select id="horizonSelect">
+      <option value="All">All</option>
+    </select>
+  </div>
 
   <div id="grilla"></div>
 
   <footer>© 2025 Quant Index — Experimental version</footer>
 
   <script>
+    let allData = [];
+
     async function cargarIndices() {
       const res = await fetch("https://quant-index-api.onrender.com/indices");
       const data = await res.json();
+      allData = data.acciones;
+      populateFilters(allData);
+      renderIndices();
+    }
+
+    function populateFilters(data) {
+      const tickers = [...new Set(data.map(a => a.ticker))];
+      const horizons = new Set();
+
+      data.forEach(a => {
+        a.estrategias.forEach(e => {
+          horizons.add(e.horizonte);
+        });
+      });
+
+      fillSelect("tickerSelect", tickers);
+      fillSelect("horizonSelect", [...horizons]);
+    }
+
+    function fillSelect(id, values) {
+      const select = document.getElementById(id);
+      select.innerHTML = '<option value="All">All</option>';
+      values.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v;
+        opt.textContent = v;
+        select.appendChild(opt);
+      });
+    }
+
+    function renderIndices() {
+      const selectedTicker = document.getElementById("tickerSelect").value;
+      const selectedHorizon = document.getElementById("horizonSelect").value;
+
       const contenedor = document.getElementById("grilla");
       contenedor.innerHTML = "";
 
-      data.acciones.forEach(accion => {
+      allData.forEach(accion => {
+        if (selectedTicker !== "All" && accion.ticker !== selectedTicker) return;
+
+        const estrategiasFiltradas = accion.estrategias.filter(e => {
+          return (selectedHorizon === "All" || e.horizonte === selectedHorizon);
+        });
+
+        if (estrategiasFiltradas.length === 0) return;
+
         const bloque = document.createElement("div");
         bloque.className = "accion";
 
@@ -93,12 +158,12 @@
         titulo.textContent = "📈 " + accion.ticker;
         bloque.appendChild(titulo);
 
-        accion.estrategias.forEach(e => {
+        estrategiasFiltradas.forEach(e => {
           const fila = document.createElement("div");
           fila.className = "estrategia";
 
           const info = document.createElement("span");
-          info.textContent = `[${e.tipo} | ${e.horizonte}]`;
+          info.textContent = `[${e.horizonte}]`;
 
           const valor = document.createElement("span");
           valor.className = "valor";
@@ -121,8 +186,11 @@
       });
     }
 
+    document.getElementById("tickerSelect").addEventListener("change", renderIndices);
+    document.getElementById("horizonSelect").addEventListener("change", renderIndices);
+
     cargarIndices();
-    setInterval(cargarIndices, 10000);
+    setInterval(cargarIndices, 15000);
   </script>
 </body>
 </html>
