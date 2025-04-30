@@ -219,7 +219,64 @@
   </script>
 
   <script>
-    async function fetchLiveSignals() {
+  async function fetchLiveSignals() {
+    const endpoints = {
+      "Swing": "https://quant-index-api.onrender.com/indice_swing",
+      "Medium-Term": "https://quant-index-api.onrender.com/indice_medium"
+    };
+
+    let container = document.getElementById("live-signals");
+
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "live-signals";
+      container.style.padding = "20px";
+      container.style.maxWidth = "500px";
+      container.style.margin = "0 auto";
+      container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
+      document.addEventListener("DOMContentLoaded", function() {
+        const ref = document.getElementById("grilla");
+        if (ref) ref.insertAdjacentElement("beforebegin", container);
+      });
+    } else {
+      container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
+    }
+
+    for (const key in endpoints) {
+      fetch(endpoints[key])
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          const card = document.createElement("div");
+          card.style.background = "#222";
+          card.style.padding = "12px";
+          card.style.marginBottom = "10px";
+          card.style.borderRadius = "12px";
+          card.style.color = "#fff";
+          card.style.fontFamily = "monospace";
+          card.style.fontSize = "1.2rem";
+
+          var color = "#ffaa00";
+          if (data.indice < 0) color = "#00ff88";
+          else if (data.indice > 0) color = "#ff7777";
+
+          card.innerHTML =
+            "<strong>[" + key + "]</strong><br>" +
+            "<span style='font-size: 2rem; color:" + color + ";'>" + data.indice + "</span><br>" +
+            "<small style='color: #ccc;'>" + (data.note || "") + "</small>";
+
+          container.appendChild(card);
+        })
+        .catch(function(error) {
+          console.error("Fetch error for " + key, error);
+        });
+    }
+  }
+
+  fetchLiveSignals();
+  setInterval(fetchLiveSignals, 15000);
+</script>
       const endpoints = {
         "Swing": "https://quant-index-api.onrender.com/indice_swing",
         "Medium-Term": "https://quant-index-api.onrender.com/indice_medium"
@@ -260,10 +317,7 @@
         }
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
-  const target = document.getElementById("grilla");
-  if (target) target.insertAdjacentElement("beforebegin", container);
-});
+      document.body.insertBefore(container, document.getElementById("grilla"));
     }
 
     fetchLiveSignals();
@@ -284,13 +338,10 @@
       container.style.padding = "20px";
       container.style.maxWidth = "500px";
       container.style.margin = "0 auto";
-      document.addEventListener("DOMContentLoaded", () => {
-  const target = document.getElementById("grilla");
-  if (target) target.insertAdjacentElement("beforebegin", container);
-});
+      document.body.insertBefore(container, document.getElementById("grilla"));
     }
 
-    container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
+    container.innerHTML = `<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>`;
 
     for (const [label, url] of Object.entries(endpoints)) {
       try {
