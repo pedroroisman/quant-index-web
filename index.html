@@ -260,7 +260,10 @@
         }
       }
 
-      document.getElementById("grilla").insertAdjacentElement("beforebegin", container);
+      document.addEventListener("DOMContentLoaded", () => {
+  const target = document.getElementById("grilla");
+  if (target) target.insertAdjacentElement("beforebegin", container);
+});
     }
 
     fetchLiveSignals();
@@ -281,10 +284,13 @@
       container.style.padding = "20px";
       container.style.maxWidth = "500px";
       container.style.margin = "0 auto";
-      document.getElementById("grilla").insertAdjacentElement("beforebegin", container);
+      document.addEventListener("DOMContentLoaded", () => {
+  const target = document.getElementById("grilla");
+  if (target) target.insertAdjacentElement("beforebegin", container);
+});
     }
 
-    container.innerHTML = `<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>`;
+    container.innerHTML = "<h2 style='margin-bottom: 0.2rem;'>📈 AAPL</h2><small style='color:#999;'>Source: real-time data</small>";
 
     for (const [label, url] of Object.entries(endpoints)) {
       try {
